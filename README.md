@@ -14,5 +14,87 @@
 
 1. Node.js (https://nodejs.org)
 2. Composer https://getcomposer.org/
+3. Локальный веб-сервер Open-server, Xampp и тд.
 
-## установка Laravel
+# установка проекта на локальном диске
+
+1. В папке где планируется разместить проект выполнить команду
+
+```
+git clone https://github.com/iliaNeustorev/TestWork
+```
+
+2. После выгрузки из Git перейти в корневую директорию появившейся папки с проектом и выполнить в командной строке следущие команды:
+
+    a) Установить зависимости Composer
+
+    ```
+    composer install
+    ```
+
+    b) Установить зависимости Node
+
+    ```
+    npm install
+    ```
+
+```
+php artisan ui vue --auth
+```
+
+2)Установка node
+
+```
+npm install
+npm run dev
+```
+
+Установка vue-router v3
+
+```
+npm install vue-router@3
+```
+
+Установка vuex v3
+
+```
+npm install vuex@3
+```
+
+Установка vform
+
+```
+npm install axios vform
+```
+
+## Настройка соединения с базой данных
+
+Редактировать файл `/.env`:
+
+```
+APP_NAME=Юридическая-консультация
+APP_ENV=local
+APP_URL=http://localhost
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=legal_advice
+DB_USERNAME=root
+DB_PASSWORD=root
+
+```
+
+## Запуск проекта на локальном сервере(OpenServer v5.4.0)
+
+Перейти в папку с проектом и в консоли openServer или windows ввести команду
+
+```
+php artisan serve
+```
+
+Запуск webpack
+
+```
+npm run watch
+```
