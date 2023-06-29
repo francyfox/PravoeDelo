@@ -64,7 +64,7 @@ Artisan::command('downloadFakeDataInBase', function (Faker $faker) {
     ]);
     $manager1->roles()->sync(1);
     $manager1->account()->create([
-        'office_id' => Office::inRandomOrder()->limit(1)->first()->id,
+        'office_id' => 1,
         'position' => 'Менеджер'
     ]);
     $manager2 = User::create([
@@ -87,7 +87,7 @@ Artisan::command('downloadFakeDataInBase', function (Faker $faker) {
     ]);
     $manager2->roles()->sync(1);
     $manager2->account()->create([
-        'office_id' => Office::inRandomOrder()->limit(1)->first()->id,
+        'office_id' => 2,
         'position' => 'Менеджер'
     ]);
     $lawyer1 = User::create([

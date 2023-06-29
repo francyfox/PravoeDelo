@@ -5,16 +5,16 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\User;
 use Inertia\Inertia;
+use Inertia\Response;
 use App\Models\Office;
 use App\Models\Remittance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\UpdateData as UpdateDataRequest;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
-use Inertia\Response;
 
 class HomeController extends Controller
 {
@@ -49,20 +49,20 @@ class HomeController extends Controller
         return Redirect::back();
     }
 
-    protected function getDefaultFilters(Request $request)
+    protected function getDefaultFilters(Request $request) : array
     {
         $user = $request->user();
         $dataFiler = [];
         $role = $user->roles->first()->name;
         switch ($role) {
-            case 'lawyer' :
+            case 'Lawyer' :
                 $lawyers = collect([]);
                 $lawyers->put($user->id, $user->last_name . ' ' . $user->first_name);
                 $dataFiler['lawyers'] = $lawyers;
                 $dataFiler['managers'] = $this->getManagersList();
                 $dataFiler['offices'] = $this->getSalesOffices([]);
                 return $dataFiler;
-            case 'manager' :
+            case 'Manager' :
                 $office = $user->account()->first();
                 $manager = collect([]);
                 $manager->put($user->id, $user->last_name . ' ' . $user->first_name);
@@ -71,10 +71,9 @@ class HomeController extends Controller
                 $dataFiler['offices'] = $this->getSalesOffices([$office->office_id]);
                 return $dataFiler;
         }
-        
     }
 
-    protected function getManagersList()
+    protected function getManagersList() : Collection
     {
         $managers = collect([]);
         $users = User::whereHas('roles', function($query){
@@ -88,7 +87,7 @@ class HomeController extends Controller
         return $managers;
     }
 
-    protected function getLawyersList()
+    protected function getLawyersList() : Collection
     {
         $lawyers = collect([]);
         $users = User::whereHas('roles', function($query){
@@ -100,7 +99,7 @@ class HomeController extends Controller
         return $lawyers;
     }
 
-    protected function getSalesOffices($id = [])
+    protected function getSalesOffices($id = []) : Collection
     {
         if (count($id) > 0) {
             return Office::whereIn('id', $id)->get()->pluck('name', 'id');
@@ -109,19 +108,16 @@ class HomeController extends Controller
         }
     }
 
-    protected function getClients(Request $request)
+    protected function getClients(Request $request) : Collection
     {
         $currentUser = $request->user();
         $role = $currentUser->roles->first()->name;
         $clientId = collect([]);
-        $clientId = [];
         switch ($role) {
-            case 'lawyer' :
+            case 'Lawyer' :
                 $clientId = User::where('lawyer_id', $currentUser->id)->get()->pluck('id')->toArray();
-                return $clientId;
-            case 'manager' :
+            case 'Manager' :
                 $clientId = User::where('manager_id', $currentUser->id)->get()->pluck('id')->toArray();
-                return $clientId;
         }
         $allPayments = DB::table('remittances')
             ->join('users', 'remittances.user_id', '=', 'users.id')
@@ -134,6 +130,7 @@ class HomeController extends Controller
         $users = User::query()->with('remittances')
             ->leftJoin('users as lawyer', 'users.lawyer_id', '=', 'lawyer.id')
             ->leftJoin('users as manager', 'users.manager_id', '=', 'manager.id')
+            ->leftJoin('remittances', 'remittances.user_id', '=', 'users.id')
             ->leftJoin('accounts', 'manager.id', '=', 'accounts.user_id')
             ->leftJoin('offices', 'offices.id', '=', 'accounts.office_id')
             ->leftJoinSub($allPayments, 'all_payments', function ($join) {
@@ -183,7 +180,7 @@ class HomeController extends Controller
         return $users;
     }
 
-    protected function getPreparedData(Collection $clients, Request $request)
+    protected function getPreparedData(Collection $clients, Request $request) : Collection
     {
         $filters = $request->all();
         if (!isset($filters['date'])) {
