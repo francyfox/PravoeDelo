@@ -34,6 +34,7 @@ class HomeController extends Controller
             'offices' => (isset($filterData['offices'])) ? $filterData['offices'] : collect([]),
             'managers' => (isset($filterData['managers'])) ? $filterData['managers'] : collect([]),
             'lawyers' => (isset($filterData['lawyers'])) ? $filterData['lawyers'] : collect([]),
+            'clients' => User::whereNotIn('id', [1,2,3,4])->select('id','first_name','last_name','middle_name')->get(),
             'payPlanItem' => $resultWithPagination,
             'filters' => $filters,
             'user' => $currentUser,
@@ -158,6 +159,9 @@ class HomeController extends Controller
             })
             ->when($request->has('manager_id'), function ($query) use ($request) {
                 $query->where('users.manager_id', $request->input('manager_id'));
+            })
+            ->when($request->has('client_id'), function ($query) use ($request) {
+                $query->where('users.id', $request->input('client_id'))->first();
             })
             ->when($request->has('lawyer_id'), function ($query) use ($request) {
                 $query->where('users.lawyer_id', $request->input('lawyer_id'));
