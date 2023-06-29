@@ -12,19 +12,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\UpdateData as UpdateDataRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
+use Inertia\Response;
 
 class HomeController extends Controller
 {
-    public function index()
-    {
-        return Inertia::render('Home', [
-            'user' => auth()->user(),
-            'role' => auth()->user()->roles->first()->name
-        ]);
-    }
-
-    public function getTable(Request $request) 
+    public function getTable(Request $request) : Response
     {
         $filters = $request->all();
         $currentUser = $request->user();
@@ -47,12 +41,12 @@ class HomeController extends Controller
         ]);
     }
 
-    public function updateData(UpdateDataRequest $request)
+    public function updateData(UpdateDataRequest $request) : RedirectResponse
     {
         $data = $request->validated();
         $user = User::findOrfail($data['id']);
         $user->update($data);
-        Redirect::back();
+        return Redirect::back();
     }
 
     protected function getDefaultFilters(Request $request)
@@ -216,7 +210,6 @@ class HomeController extends Controller
             $item['lawyer'] = [];
             $item['lawyer']['id'] = ($client->lawyer_id > 0) ? $client->lawyer_id : 0;
             $item['lawyer']['name'] = ($client->lawyer_id > 0) ? $client->lawyer_first_name . ' ' . $client->lawyer_last_name : '';
-            $item['program_id'] = $client->id;
             $item['program_type'] = $client->type;
             $item['program_price'] = $client->price;
             $item['program_plan'] = $client->plan;

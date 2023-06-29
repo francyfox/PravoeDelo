@@ -8,7 +8,6 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Faker\Generator as Faker;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 
@@ -40,7 +39,7 @@ Artisan::command('downloadFakeDataInBase', function (Faker $faker) {
         ['name' => 'Ростов'],
         ['name' => 'Воронеж'],
         ['name' => 'Москва'],
-        ['name' => 'Иркустк']
+        ['name' => 'Иркутск']
     ];
     foreach ($offices as $office) {
         Office::create($office);
@@ -147,7 +146,7 @@ Artisan::command('downloadFakeDataInBase', function (Faker $faker) {
                 'middle_name' => $faker->firstName(),
                 'last_name' => $faker->lastName(),
                 'email' => $faker->unique()->safeEmail(),
-                'email_verified_at' => now(),
+                'email_verified_at' => null,
                 'manager_id' => $faker->randomElement([1, 2]),
                 'lawyer_id' => $faker->randomElement([3, 4, 0]),
                 'type' => $faker->randomElement(['Минимизация', 'Банкротство']),
@@ -160,12 +159,11 @@ Artisan::command('downloadFakeDataInBase', function (Faker $faker) {
                 'transfer_stop' => $faker->dateTimeBetween($startTransfer, $endTransfer)->format('Y-m-d'),
                 'date_registration' => $faker->dateTimeBetween($startRegistration, $endRegistration)->format('Y-m-d'),
                 'remember_token' => Str::random(10),
-                
             ]);
             $user->roles()->sync(3);
         }
-    $clients = User::whereNotIn('id',[1,2,3,4])->get();
-    for ($i=0; $i < 100; $i++) { 
+    $clients = User::whereNotIn('email',['123123@mail.ru','999999@mail.ru','lawyer2@mail.ru','manager2@mail.ru'])->get();
+    for ($i=0; $i < 200; $i++) { 
         Remittance::create([
             'user_id' => $clients->random()->id,
             'type' => $faker->randomElement(['На расчетный счет Сбербанк', 'В центральном кассе']),

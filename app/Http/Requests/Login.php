@@ -16,7 +16,7 @@ class Login extends FormRequest
         return true;
     }
 
-    public function rules(): array
+    public function rules() : array
     {
         return [
             'email' => ['required', 'string', 'email', 'exists:users'],
@@ -39,7 +39,7 @@ class Login extends FormRequest
         RateLimiter::clear($this->throttleKey());
     }
 
-    public function ensureIsNotRateLimited(): void
+    public function ensureIsNotRateLimited()
     {
         if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;

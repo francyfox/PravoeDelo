@@ -14,20 +14,25 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::get('/', function () {
+    if(auth()->user() == null) {
+        return redirect()->route('login');
+    } else {
+        return redirect()->route('table');
+    }
+});
 Route::controller(AuthController::class)->group(function() {
     Route::middleware('guest')->group(function() {
-        Route::get('auth/login', 'create')->name('login');
-        Route::post('auth/login', 'store');
+        Route::get('/login', 'create')->name('login');
+        Route::post('/login', 'store');
     });
     Route::middleware('auth')->group(function() {
-        Route::post('/auth/logout', 'logout');
+        Route::post('/logout', 'logout');
     });
 });
-Route::middleware('auth')->group(function() {
-    Route::get('/', [HomeController::class, 'index'])->name('home');
-    Route::get('/table', [HomeController::class, 'getTable'])->middleware('can:check-worker');
-    Route::post('/update-data', [HomeController::class, 'updateData'])->middleware('can:check-worker');
+Route::middleware('auth','can:check-worker')->group(function() {
+    Route::get('/table', [HomeController::class, 'getTable'])->name('table');
+    Route::post('/update-data', [HomeController::class, 'updateData']);
 });
 
 

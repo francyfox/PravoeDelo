@@ -22,8 +22,11 @@ class AuthController extends Controller
     public function store(LoginRequest $request) : RedirectResponse
     {
         $request->authenticate();
+        if($request->user()->roles->first()->name == 'Client') {
+            $this->logout($request);
+        }
         $request->session()->regenerate();
-        return redirect()->route('home');
+        return redirect()->route('table');
     }
     /**
      * разлогинится
