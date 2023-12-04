@@ -15,7 +15,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\UpdateData as UpdateDataRequest;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
-use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -35,7 +34,7 @@ class HomeController extends Controller
             'offices' => (isset($filterData['offices'])) ? $filterData['offices'] : collect([]),
             'managers' => (isset($filterData['managers'])) ? $filterData['managers'] : collect([]),
             'lawyers' => (isset($filterData['lawyers'])) ? $filterData['lawyers'] : collect([]),
-            'clients' => User::whereNotIn('id', [1,2,3,4])->select('id','first_name','last_name','middle_name')->get(),
+            'clients' => $clients,
             'payPlanItem' => $resultWithPagination,
             'filters' => $filters,
             'user' => $currentUser,
