@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-use App\Http\Requests\UpdateData as UpdateDataRequest;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 
 class HomeController extends Controller
@@ -42,9 +41,16 @@ class HomeController extends Controller
         ]);
     }
 
-    public function updateData(UpdateDataRequest $request) : RedirectResponse
+    public function updateData(Request $request) : RedirectResponse
     {
-        $data = $request->validated();
+        $request->validate([
+            'id' => 'required|numeric',
+            'lawyer_id' => 'numeric',
+            'manager_id' => 'numeric',
+            'first_date' => 'integer|between:1,31',
+            'second_date' => 'integer|between:1,31',
+        ]);
+        $data = $request->all();
         $user = User::findOrfail($data['id']);
         $user->update($data);
         return Redirect::back();
