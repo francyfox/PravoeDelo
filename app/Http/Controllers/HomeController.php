@@ -203,7 +203,9 @@ class HomeController extends Controller
             $item = [];
             $item['id'] = $client->id;
             $item['date_register'] = Carbon::parse($client->date_registration)->format('d.m.Y');
-            $item['name'] = $client->last_name . ' ' . $client->first_name . ' ' . $client->middle_name;
+            $item['first_name'] = $client->first_name;
+            $item['middle_name'] = $client->middle_name;
+            $item['last_name'] = $client->last_name;
             $item['manager'] = [];
             $item['manager']['id'] = ($client->manager_id > 0) ? $client->manager_id : 0;
             $item['manager']['name'] = ($client->manager_id > 0) ? $client->manager_first_name . ' ' . $client->manager_last_name : '';
