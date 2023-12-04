@@ -15,6 +15,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\UpdateData as UpdateDataRequest;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -155,7 +156,7 @@ class HomeController extends Controller
                 } else {
                     $dateFinish = Carbon::now()->format(('Y-m-d'));
                 }
-                $query->whereBetween('profiles.client_handover_date', [$dateStart, $dateFinish]);
+                $query->whereBetween('users.transfer_stop', [$dateStart, $dateFinish]);
             })
             ->when($request->has('manager_id'), function ($query) use ($request) {
                 $query->where('users.manager_id', $request->input('manager_id'));
@@ -187,7 +188,7 @@ class HomeController extends Controller
     protected function getPreparedData(Collection $clients, Request $request) : Collection
     {
         $filters = $request->all();
-        if (!isset($filters['date'])) {
+        if (! isset($filters['date'])) {
             $filters['date'] = Carbon::now();
         } else {
             $filters['date'] = Carbon::parse($filters['date']);
