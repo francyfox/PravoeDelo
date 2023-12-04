@@ -78,28 +78,16 @@ class HomeController extends Controller
 
     protected function getManagersList() : Collection
     {
-        $managers = collect([]);
-        $users = User::whereHas('roles', function($query){
+        return User::whereHas('roles', function($query){
             $query->where('name', 'Manager');
-        })->select('id', 'first_name', 'last_name')->get();
-        foreach ($users as $item) {
-            if (!empty($item->account)) {
-                $managers->put($item->id, $item->last_name . ' ' . $item->first_name);
-            }
-        }
-        return $managers;
+        })->pluck('name', 'id');
     }
 
     protected function getLawyersList() : Collection
     {
-        $lawyers = collect([]);
-        $users = User::whereHas('roles', function($query){
+        return User::whereHas('roles', function($query) {
             $query->where('name', 'Lawyer');
-        })->select('id', 'first_name', 'last_name')->get();
-        foreach ($users as $item) {
-            $lawyers->put($item->id, $item->last_name . ' ' . $item->first_name);
-        }
-        return $lawyers;
+        })->pluck('name', 'id');
     }
 
     protected function getSalesOffices($id = []) : Collection
@@ -176,10 +164,10 @@ class HomeController extends Controller
             ->orderBy('users.id', 'desc')
             ->select([
                 'users.id', 'users.type', 'users.price', 'users.plan', 'users.first_date', 'users.second_date', 'users.payment_per_month',
-                'users.first_name', 'users.last_name', 'users.date_registration', 'users.manager_id', 'users.middle_name', 'users.lawyer_id',
-                'users.transfer_stop','lawyer.first_name AS lawyer_first_name', 'lawyer.last_name AS lawyer_last_name',
-                'manager.first_name AS manager_first_name', 'manager.last_name AS manager_last_name', 'accounts.office_id',
-                'offices.name','all_payments.sum_all_payment'
+                'users.name as client_name', 'users.date_registration', 'users.manager_id', 'users.lawyer_id',
+                'users.transfer_stop','lawyer.name AS lawyer_name',
+                'manager.name AS manager_name', 'accounts.office_id',
+                'offices.name', 'all_payments.sum_all_payment'
             ])
             ->get();
         return $users;
@@ -203,17 +191,15 @@ class HomeController extends Controller
             $item = [];
             $item['id'] = $client->id;
             $item['date_register'] = Carbon::parse($client->date_registration)->format('d.m.Y');
-            $item['first_name'] = $client->first_name;
-            $item['middle_name'] = $client->middle_name;
-            $item['last_name'] = $client->last_name;
+            $item['client_name'] = $client->client_name;
             $item['manager'] = [];
             $item['manager']['id'] = ($client->manager_id > 0) ? $client->manager_id : 0;
-            $item['manager']['name'] = ($client->manager_id > 0) ? $client->manager_first_name . ' ' . $client->manager_last_name : '';
+            $item['manager']['name'] = ($client->manager_id > 0) ? $client->manager_name : '';
             $item['manager']['office'] = ($client->manager_id > 0) ? $client->name : '';
             $item['manager']['office_id'] = ($client->manager_id > 0) ? $client->office_id : 0;
             $item['lawyer'] = [];
             $item['lawyer']['id'] = ($client->lawyer_id > 0) ? $client->lawyer_id : 0;
-            $item['lawyer']['name'] = ($client->lawyer_id > 0) ? $client->lawyer_first_name . ' ' . $client->lawyer_last_name : '';
+            $item['lawyer']['name'] = ($client->lawyer_id > 0) ? $client->lawyer_name : '';
             $item['program_type'] = $client->type;
             $item['program_price'] = $client->price;
             $item['program_plan'] = $client->plan;
@@ -222,14 +208,14 @@ class HomeController extends Controller
             $item['program_payment_per_month'] = $client->payment_per_month;
             $item['client_handover_date'] = (isset($client->transfer_stop)) ? Carbon::parse($client->transfer_stop)->format('d.m.Y') : '';
             $userMonthPayment = $paymentMounth->where('user_id', $client->id);
-            $item['payment'] = [];
+            $item['payment_select'] = [];
             if ($userMonthPayment->isNotEmpty()) {
                 foreach ($userMonthPayment as $payment) {
                     $item['payment'][$payment->id] = ['date' => Carbon::parse($payment->payed_at)->format('d.m.Y'), 'amount' => $payment->amount];
                 }
             }
             $item['all_payments'] = (int)$client->sum_all_payment;
-            $item['list_remmitances'] = $client->remittances->toArray();
+            $item['list_full_remmitances'] = $client->remittances->toArray();
             $result->push($item);
         }
         return $result;

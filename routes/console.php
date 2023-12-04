@@ -45,9 +45,7 @@ Artisan::command('downloadFakeDataInBase', function (Faker $faker) {
         Office::create($office);
     }
     $manager1 = User::create([
-        'first_name' => $faker->firstName(),
-        'middle_name' => $faker->firstName(),
-        'last_name' => $faker->lastName(),
+        'name' => $faker->firstName() . ' ' . $faker->lastName(),
         'email' => '123123@mail.ru',
         'email_verified_at' => Carbon::parse('2022-12-29 15:50:40'),
         'manager_id' => 0,
@@ -68,9 +66,7 @@ Artisan::command('downloadFakeDataInBase', function (Faker $faker) {
         'position' => 'Менеджер'
     ]);
     $manager2 = User::create([
-        'first_name' => $faker->firstName(),
-        'middle_name' => $faker->firstName(),
-        'last_name' => $faker->lastName(),
+        'name' => $faker->firstName() . ' ' . $faker->lastName(),
         'email' => 'manager2@mail.ru',
         'email_verified_at' => Carbon::parse('2022-12-29 15:50:40'),
         'manager_id' => 0,
@@ -91,9 +87,7 @@ Artisan::command('downloadFakeDataInBase', function (Faker $faker) {
         'position' => 'Менеджер'
     ]);
     $lawyer1 = User::create([
-        'first_name' => $faker->firstName(),
-        'middle_name' => $faker->firstName(),
-        'last_name' => $faker->lastName(),
+        'name' => $faker->firstName() . ' ' . $faker->lastName(),
         'email' => '999999@mail.ru',
         'email_verified_at' => Carbon::parse('2022-12-29 15:50:40'),
         'manager_id' => 0,
@@ -114,9 +108,7 @@ Artisan::command('downloadFakeDataInBase', function (Faker $faker) {
         'position' => 'Юрист'
     ]);
     $lawyer2 = User::create([
-        'first_name' => $faker->firstName(),
-        'middle_name' => $faker->firstName(),
-        'last_name' => $faker->lastName(),
+        'name' => $faker->firstName() . ' ' . $faker->lastName(),
         'email' => 'lawyer2@mail.ru',
         'email_verified_at' => Carbon::parse('2022-12-29 15:50:40'),
         'manager_id' => 0,
@@ -142,9 +134,7 @@ Artisan::command('downloadFakeDataInBase', function (Faker $faker) {
     $endRegistration = Carbon::parse('2023-02-27 15:50:40');
     for($i = 0; $i < 100; $i++) {
             $user = User::create([
-                'first_name' => $faker->firstName(),
-                'middle_name' => $faker->firstName(),
-                'last_name' => $faker->lastName(),
+                'name' => $faker->firstName() . ' ' . $faker->lastName(),
                 'email' => $faker->unique()->safeEmail(),
                 'email_verified_at' => null,
                 'manager_id' => $faker->randomElement([1, 2]),
@@ -172,4 +162,5 @@ Artisan::command('downloadFakeDataInBase', function (Faker $faker) {
             'payed_at' => $faker->dateTimeBetween($startTransfer, $endTransfer)->format('Y-m-d')
         ]);
     }
+    $this->comment('completed');
 })->purpose('OK');
