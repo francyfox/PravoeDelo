@@ -30,6 +30,7 @@ class HomeController extends Controller
         $clients = $this->getClients($request);
         $result = $this->getPreparedData($clients, $request);
         $resultWithPagination = $this->yourPaginator($result->toArray(), 25, $request);
+        //dsfsdfsdfsdfds
         return Inertia::render('Table', [
             'offices' => (isset($filterData['offices'])) ? $filterData['offices'] : collect([]),
             'managers' => (isset($filterData['managers'])) ? $filterData['managers'] : collect([]),
