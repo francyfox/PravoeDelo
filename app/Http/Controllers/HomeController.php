@@ -58,17 +58,13 @@ class HomeController extends Controller
         $role = $user->roles->first()->name;
         switch ($role) {
             case 'Lawyer' :
-                $lawyers = collect([]);
-                $lawyers->put($user->id, $user->last_name . ' ' . $user->first_name);
-                $dataFiler['lawyers'] = $lawyers;
+                $dataFiler['lawyers'] = $this->getLawyersList();
                 $dataFiler['managers'] = $this->getManagersList();
                 $dataFiler['offices'] = $this->getSalesOffices([]);
                 return $dataFiler;
             case 'Manager' :
                 $office = $user->account()->first();
-                $manager = collect([]);
-                $manager->put($user->id, $user->last_name . ' ' . $user->first_name);
-                $dataFiler['managers'] = $manager;
+                $dataFiler['managers'] = $this->getManagersList();
                 $dataFiler['lawyers'] = $this->getLawyersList();
                 $dataFiler['offices'] = $this->getSalesOffices([$office->office_id]);
                 return $dataFiler;
@@ -118,8 +114,10 @@ class HomeController extends Controller
         switch ($role) {
             case 'Lawyer' :
                 $clientId = User::where('lawyer_id', $currentUser->id)->get()->pluck('id')->toArray();
+                break;
             case 'Manager' :
                 $clientId = User::where('manager_id', $currentUser->id)->get()->pluck('id')->toArray();
+                break;
         }
         $allPayments = DB::table('remittances')
             ->join('users', 'remittances.user_id', '=', 'users.id')
@@ -129,7 +127,7 @@ class HomeController extends Controller
                 remittances.user_id
             '))
             ->groupBy('remittances.user_id');
-        $users = User::query()->with('remittances')
+        $users = User::whereIn('users.id', $clientId)->with('remittances')
             ->leftJoin('users as lawyer', 'users.lawyer_id', '=', 'lawyer.id')
             ->leftJoin('users as manager', 'users.manager_id', '=', 'manager.id')
             ->leftJoin('remittances', 'remittances.user_id', '=', 'users.id')
@@ -144,9 +142,6 @@ class HomeController extends Controller
                     $query->whereBetween('users.first_date', [(int)$requestDate[0], (int)$requestDate[1]]);
                     $query->orWhereBetween('users.second_date', [(int)$requestDate[0], (int)$requestDate[1]]);
                 }
-            })
-            ->when($clientId, function ($query) use ($clientId) {
-                $query->whereIn('remittances.user_id', $clientId);
             })
             ->when($request->has('dates_transfer'), function ($query) use ($request) {
                 $requestDate = $request->input('dates_transfer');
