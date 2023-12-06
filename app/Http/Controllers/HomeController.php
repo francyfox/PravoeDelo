@@ -37,6 +37,7 @@ class HomeController extends Controller
             'payPlanItem' => $resultWithPagination,
             'filters' => $filters,
             'user' => $currentUser,
+            'user_id' => $currentUser->id,
             'role' => $currentUser->roles->first()->name
         ]);
     }
@@ -120,7 +121,7 @@ class HomeController extends Controller
                 remittances.user_id
             '))
             ->groupBy('remittances.user_id');
-        $users = User::whereIn('users.id', $clientId)->with('remittances')
+        $users = User::with('remittances')
             ->leftJoin('users as lawyer', 'users.lawyer_id', '=', 'lawyer.id')
             ->leftJoin('users as manager', 'users.manager_id', '=', 'manager.id')
             ->leftJoin('remittances', 'remittances.user_id', '=', 'users.id')
@@ -158,6 +159,7 @@ class HomeController extends Controller
             ->when($request->has('office'), function ($query) use ($request) {
                 $query->where('accounts.office_id', $request->input('office'));
             })
+            ->whereIn('users.id', $clientId)
             ->where('users.price', '>', 0)
             ->where('users.plan', '>', 0)
             ->where('users.payment_per_month', '!=', '')
@@ -169,6 +171,7 @@ class HomeController extends Controller
                 'manager.name AS manager_name', 'accounts.office_id',
                 'offices.name', 'all_payments.sum_all_payment'
             ])
+            ->distinct()
             ->get();
         return $users;
     }
@@ -211,7 +214,7 @@ class HomeController extends Controller
             $item['payment_select'] = [];
             if ($userMonthPayment->isNotEmpty()) {
                 foreach ($userMonthPayment as $payment) {
-                    $item['payment'][$payment->id] = ['date' => Carbon::parse($payment->payed_at)->format('d.m.Y'), 'amount' => $payment->amount];
+                    $item['payment_select'][$payment->id] = ['date' => Carbon::parse($payment->payed_at)->format('d.m.Y'), 'amount' => $payment->amount];
                 }
             }
             $item['all_payments'] = (int)$client->sum_all_payment;
