@@ -37,7 +37,6 @@ class HomeController extends Controller
             'payPlanItem' => $resultWithPagination,
             'filters' => $filters,
             'user' => $currentUser,
-            'user_id' => $currentUser->id,
             'role' => $currentUser->roles->first()->name
         ]);
     }
