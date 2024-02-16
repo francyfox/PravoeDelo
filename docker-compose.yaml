@@ -1,0 +1,89 @@
+version: '3.9'
+
+services:
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./.docker/nginx/Dockerfile
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "84:80"
+    volumes:
+      - .:/var/www
+      - ./.docker/nginx/config/default.conf:/etc/nginx/conf.d/default.conf
+      - ./.docker/nginx/logs/:/var/log/nginx
+    depends_on:
+      - php
+    networks:
+      - nginx
+
+  php:
+    build:
+      context: .
+      dockerfile: ./.docker/php/php_8.1/Dockerfile
+    volumes:
+      - .:/var/www
+    ports:
+      - "9001:9000"
+    networks:
+      - nginx
+
+  db:
+    build:
+      context: .
+      dockerfile: .docker/db/mysql_8.0/Dockerfile
+    container_name: db
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./.docker/db/mysql_8.0/data:/var/lib/mysql
+      - .:/var/www
+    environment:
+      - MYSQL_HOST=127.0.0.1
+      - MYSQL_PORT=3306
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=test_work
+    command: --default-authentication-plugin=mysql_native_password --net_buffer_length=1000000 --max_allowed_packet=1000000000 --explicit_defaults_for_timestamp=1
+    networks:
+      - nginx
+      - web-phpmyadmin
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: pma
+    restart: unless-stopped
+    environment:
+      - PMA_ARBITRARY=1
+    ports:
+      - "8001:80"
+    links:
+      - db:db
+    depends_on:
+      - db
+    networks:
+      - web-phpmyadmin
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: unless-stopped
+    network_mode: host
+
+#  elasticsearch:
+#    image: docker.elastic.co/elasticsearch/elasticsearch:7.16.3@sha256:0efc3a054ae97ad00cccc33b9ef79ec022970b2a9949893db4ef199edcdca2ce
+#    container_name: elastic
+#    restart: unless-stopped
+#    mem_limit: 120m
+#    network_mode: host
+#    environment:
+#      - discovery.type=single-node
+#      - bootstrap.memory_lock=true
+
+networks:
+  nginx:
+    driver: bridge
+  web-phpmyadmin:
+    driver: bridge
