@@ -10,23 +10,28 @@
         "production": "mix --production"
     },
     "devDependencies": {
+        "@fontsource-variable/jetbrains-mono": "^5.0.19",
         "@inertiajs/inertia": "0.10.1",
         "@inertiajs/inertia-vue3": "0.5.2",
         "@inertiajs/progress": "0.2.7",
         "@tailwindcss/forms": "0.4.0",
         "@vue/compiler-sfc": "3.2.31",
+        "autoprefixer": "^10.4.17",
         "axios": "0.21.4",
         "laravel-mix": "6.0.43",
         "lodash": "4.17.21",
+        "naive-ui": "^2.37.3",
+        "postcss": "^8.4.35",
         "resolve-url-loader": "5.0.0",
         "sass": "^1.63.6",
         "sass-loader": "^12.1.0",
-        "tailwindcss": "3.0.23",
+        "tailwindcss": "^3.0.23",
         "vue": "3.2.31",
         "vue-loader": "16.8.3"
     },
     "dependencies": {
         "air-datepicker": "3.1.1",
+        "mix-tailwindcss": "^1.3.0",
         "vue-uuid": "2.1.0"
     }
 }
