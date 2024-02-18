@@ -6,10 +6,6 @@
         <script src="https://polyfill.io/v3/polyfill.min.js?features=smoothscroll,NodeList.prototype.forEach,Promise,Object.values,Object.assign" defer=""></script>
         <script src="https://polyfill.io/v3/polyfill.min.js?features=String.prototype.startsWith" defer=""></script>
         <title inertia>Тест</title>
-
-        <!-- Fonts -->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
-
         <!-- Styles -->
         <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 

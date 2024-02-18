@@ -2,7 +2,7 @@ require("./bootstrap");
 
 import '@fontsource-variable/jetbrains-mono'
 import { createApp, h } from "vue";
-import { createInertiaApp } from "@inertiajs/inertia-vue3";
+import { createInertiaApp } from "@inertiajs/inertia-vue3"; // устарел, нету в доках
 import { InertiaProgress } from "@inertiajs/progress";
 
 

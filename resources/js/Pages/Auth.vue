@@ -4,6 +4,10 @@ import LoginForm from '#module/auth/login/LoginForm.vue'
 import BaseLayout from '#root/layout/BaseLayout.vue'
 export default {
     name: 'Auth',
+    props: {
+        component: String,
+        user: Object,
+    },
     components: { Head, BaseLayout, LoginForm }
 }
 </script>
@@ -11,6 +15,7 @@ export default {
 <template>
     <base-layout>
         <head title="Auth" />
+
         <login-form />
     </base-layout>
 

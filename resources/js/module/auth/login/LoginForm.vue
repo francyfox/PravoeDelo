@@ -1,8 +1,17 @@
 <script>
 import { NForm, NFormItem, NInput, NButton, useMessage } from 'naive-ui';
+import { RuleEmail } from '#module/validator/validator.rules'
+import { Inertia } from '@inertiajs/inertia'
 
+const defaultFormData = {
+    email: null,
+    password: null
+}
 export default {
     name: 'LoginForm',
+    props: {
+        errors: Object,
+    },
     components: { NForm, NFormItem, NInput, NButton },
     setup() {
         const message = useMessage();
@@ -12,18 +21,19 @@ export default {
     data() {
         return {
             formData: {
-                email: '',
-                password: ''
+                email: '123123@mail.ru',
+                password: '123456'
             },
             rules: {
                 email: {
                     required: true,
-                    message: 'Please input your email',
-                    trigger: ['input', 'blur']
+                    message: 'Please input valid email',
+                    trigger: ['input', 'blur'],
+                    validator: RuleEmail
                 },
                 password: {
                     required: true,
-                    message: 'Please input your password',
+                    message: 'Please input valid password',
                     trigger: ['input']
                 }
             },
@@ -31,13 +41,18 @@ export default {
         }
     },
     methods: {
-        sendForm(e) {
+        async sendForm(e) {
             e.preventDefault();
             this.$refs.formRef.validate((errors) => {
                 if (!errors) {
-                    this.message.success('Valid')
+                    Inertia.post('login', this.$data.formData);
+
+                    setTimeout(() => {
+                        this.$data.formData = defaultFormData;
+                        this.message.error('Wrong password')
+                    }, 500)
+                    // Как определить ошибку? errors ничего не возвращает, промиса или колбэка тоже
                 } else {
-                    console.log(errors)
                     this.message.error('Invalid')
                 }
             })
@@ -56,6 +71,9 @@ export default {
                 <h1 class="text-center font-semibold text-3xl lg:text-4xl text-gray-800 mb-3">
                     Login
                 </h1>
+
+               {{ JSON.stringify(errors) }}
+
 
                 <n-form
                     ref="formRef"

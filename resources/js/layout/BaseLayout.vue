@@ -1,8 +1,10 @@
 <script>
 import { NConfigProvider, NMessageProvider } from 'naive-ui'
+import NavBar from '#module/nav-bar/NavBar.vue'
 export default {
     name: 'Base',
-    components: { NConfigProvider, NMessageProvider },
+    props: ['user'],
+    components: { NavBar, NConfigProvider, NMessageProvider },
     data() {
         return {
         }
@@ -13,7 +15,8 @@ export default {
 <template>
     <n-config-provider preflight-style-disabled>
         <n-message-provider >
-            <div class="bg-gray-100">
+            <nav-bar :user="user" />
+            <div class="h-full bg-gray-100">
                 <slot />
             </div>
         </n-message-provider>
