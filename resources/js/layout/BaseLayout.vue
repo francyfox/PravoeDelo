@@ -16,7 +16,7 @@ export default {
     <n-config-provider preflight-style-disabled>
         <n-message-provider >
             <nav-bar :user="user" />
-            <div class="h-full bg-gray-100">
+            <div class="h-full bg-gray-100 px-5 xl:px-0">
                 <slot />
             </div>
         </n-message-provider>

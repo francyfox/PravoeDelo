@@ -1,3 +1,5 @@
+import tr from 'air-datepicker/locale/tr'
+
 require("./bootstrap");
 
 import '@fontsource-variable/jetbrains-mono'
@@ -14,6 +16,12 @@ meta.name = 'naive-ui-style'
 document.head.appendChild(meta)
 
 createInertiaApp({
+    progress: {
+        delay: 250,
+        color: '#29d',
+        includeCSS: true,
+        showSpinner: true,
+    },
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => require(`./Pages/${name}.vue`),
     setup({ el, app, props, plugin }) {

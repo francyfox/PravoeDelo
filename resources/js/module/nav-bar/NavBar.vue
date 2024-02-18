@@ -12,7 +12,7 @@ export default {
 </script>
 
 <template>
-    <nav class="bg-white border-gray-200 dark:bg-gray-900">
+    <nav class="bg-white border-gray-200 dark:bg-gray-900 px-5 xl:px-0">
         <div class="container min-h-[72px] flex flex-wrap items-center justify-between mx-auto py-4">
             <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
                 <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">PravoeDelo test app</span>
