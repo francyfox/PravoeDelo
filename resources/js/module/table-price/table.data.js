@@ -1,50 +1,81 @@
+import { toTimeStamp } from '#root/util'
+
 export const columns = [
     {
+        key: 'id',
+        title: 'ID',
+        width: 70,
+        sorter: (a, b) => a.id - b.id,
+    },
+    {
         key: 'officeAndManager',
-        title: 'Офис и менеджер'
+        title: 'Офис и менеджер',
+        sorter: (a, b) => a.officeAndManager.localeCompare(b.officeAndManager),
     },
     {
         key: 'lawyer',
-        title: 'Юрист (ФИО)'
+        title: 'Юрист (ФИО)',
+        sorter: (a, b) => a.lawyer.localeCompare(b.lawyer),
     },
     {
         key: 'client',
-        title: 'ФИО Клиента'
+        title: 'ФИО Клиента',
+        sorter: (a, b) => a.client.localeCompare(b.client),
     },
     {
         key: 'program',
-        title: 'Программа'
+        title: 'Программа',
+        width: 120,
+        sorter: (a, b) => a.program.localeCompare(b.program),
     },
     {
         key: 'registrationDate',
-        title: 'Дата регистрации'
+        title: 'Дата регистрации',
+        sorter: (a, b) => toTimeStamp(a.registrationDate) - toTimeStamp(b.registrationDate),
     },
     {
         key: 'plan',
-        title: 'План'
+        title: 'План',
+        isNotSortable: true
     },
     {
         key: 'price',
-        title: 'Стоимость программы'
+        title: 'Стоимость программы',
+        isNotSortable: true
     },
     {
         key: 'month',
-        title: 'В месяц'
+        title: 'В месяц',
+        sorter: (a, b) => a.month - b.month,
     },
     {
         key: 'paymentDate',
-        title: 'Даты оплаты'
+        title: 'Даты оплаты',
+        sorter: (a, b) => a.paymentDate - b.paymentDate,
     },
     {
         key: 'deliveryDate',
-        title: 'Дата передачи'
+        title: 'Дата передачи',
+        sorter: (a, b) => toTimeStamp(a.deliveryDate) - toTimeStamp(b.deliveryDate),
     },
 ]
 
+export const createNPagination = (data) => {
+    return {
+        page: data.current_page,
+        pageCount: data.last_page,
+        size: 'large'
+    }
+}
+
 export const formatTableData = (data) => {
-    console.log('data', data)
+    if (typeof data === 'object') {
+        data = Object.values(data)
+    }
+
     return data.map((i) => {
         return {
+            id: i.id,
             officeAndManager: `${i.manager.office} - ${i.manager.name}`,
             lawyer: i.lawyer.name,
             client: i.client_name,

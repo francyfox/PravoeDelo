@@ -15,3 +15,5 @@ npm-debug.log
 yarn-error.log
 .docker/nginx/logs
 .docker/php/log
+.docker/db/mysql_8.0/data
+.idea
